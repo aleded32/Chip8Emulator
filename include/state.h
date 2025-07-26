@@ -5,15 +5,12 @@ class state
 {
 public:
 
-    state(const std::string& stateName){ mStateName = stateName;};
-    virtual ~state(){}
+    state() = default;
 
     virtual void Enter(){}
-    virtual std::string Execute(){ return "";}
+    virtual std::string Execute() const { return "";}
     virtual void Leave(){}
 
-    virtual std::string getName() const { return mStateName;}
-
 private:
-    std::string mStateName;
+    
 };

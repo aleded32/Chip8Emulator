@@ -11,7 +11,7 @@ set(HEADER_FILES "include")
 add_subdirectory(vendored/SDL EXCLUDE_FROM_ALL)
 
 # Create your game executable target as usual
-add_executable(chip8Emulator WIN32 src/main.cpp src/stateMachine.cpp src/fetch.cpp src/execute.cpp src/decode.cpp)
+add_executable(chip8Emulator WIN32 src/main.cpp src/app.cpp src/stateMachine.cpp)
 
 # Link to the actual SDL3 library.
 target_link_libraries(chip8Emulator PRIVATE SDL3::SDL3)
