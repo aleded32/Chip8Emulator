@@ -45,17 +45,14 @@ void decode::Leave()
 }
 
 
-stateMachine::stateMachine()
+stateMachine::stateMachine() :
+    mFetch(stateMachine::mStatefetch.data()), mExecute(stateMachine::mStateExecute.data()),
+    mDecode(stateMachine::mStateDecode.data())
 {
 
-    std::shared_ptr<state> fetchState{std::make_shared<fetch>()};
-    std::shared_ptr<state> executeState{std::make_shared<execute>()};
-    std::shared_ptr<state> decodeState{std::make_shared<decode>()};
-
-
-    AddState(stateMachine::mStatefetch, fetchState);
-    AddState(stateMachine::mStateExecute, executeState);
-    AddState(stateMachine::mStateDecode, decodeState);
+    AddState(std::make_shared<fetch>(mFetch));
+    AddState(std::make_shared<execute>(mExecute));
+    AddState(std::make_shared<decode>(mDecode));
 
     if(!stateQueue.empty())
     {
@@ -65,7 +62,7 @@ stateMachine::stateMachine()
     
 
 void stateMachine::OnEnter()
-{
+{   
     if(currentState)
     {
         currentState->Enter();
@@ -76,29 +73,27 @@ void stateMachine::OnExecute()
 {
     if(currentState)
     {
-        const std::string nextStateName{currentState->Execute()};
+        const std::string_view nextStateName{currentState->Execute()};
         if(!nextStateName.empty())
         {
             const auto findState = [&](std::pair<std::string_view, std::shared_ptr<state>> state){return state.first == nextStateName;};
             std::shared_ptr<state> tempState = std::find_if(stateQueue.begin(), stateQueue.end(), findState)->second;
             nextState = tempState;
         }
-        
     }
-
 }
 
 void stateMachine::OnLeave()
 {
-    if(currentState)
+    if((currentState != nextState) && nextState.get())
     {
         currentState->Leave();
         currentState = nextState;
     }
 }
 
-void stateMachine::AddState(const std::string_view& name, std::shared_ptr<state> State)
+void stateMachine::AddState(std::shared_ptr<state> State)
 {
-    const auto stateToAdd{std::make_pair(name, State)};
+    const auto stateToAdd{std::make_pair(State->GetName(), State)};
     stateQueue.insert(stateToAdd); 
 }

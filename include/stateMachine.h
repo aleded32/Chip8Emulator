@@ -9,7 +9,7 @@ class fetch : public state
 {
 public:
     
-    fetch() = default;
+    fetch(const std::string& name) : state(name){}
 
     void Enter() override;
     std::string Execute() const override;
@@ -22,7 +22,7 @@ class execute : public state
 {
 public:
     
-    execute() = default;
+    execute(const std::string& name) : state(name){}
 
     void Enter() override;
     std::string Execute() const override;
@@ -35,7 +35,7 @@ class decode : public state
 {
 public:
     
-    decode() = default;
+    decode(const std::string& name) : state(name){}
 
     void Enter() override;
     std::string Execute() const override;
@@ -54,13 +54,17 @@ public:
     void OnEnter();
     void OnExecute();
     void OnLeave();
-    void AddState(const std::string_view& name, std::shared_ptr<state> state);
+    void AddState(std::shared_ptr<state> State);
  
 
 private:
     std::unordered_map<std::string_view, std::shared_ptr<state>> stateQueue;
     std::shared_ptr<state> currentState;
     std::shared_ptr<state> nextState;
+
+    fetch mFetch;
+    execute mExecute;
+    decode mDecode;
 
 public:
     static constexpr std::string_view mStatefetch{"fetch"};
