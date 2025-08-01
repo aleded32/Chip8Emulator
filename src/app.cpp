@@ -1,14 +1,14 @@
 #include "app.h"
 void App::Init()
 {
-    pStateMachine = std::make_shared<stateMachine>();
+    pStateMachine = new stateMachine();
 }
 
 void App::Execute()
 {
-    pStateMachine.get()->OnEnter();
-    pStateMachine.get()->OnExecute();
-    pStateMachine.get()->OnLeave();
+    pStateMachine->OnEnter();
+    pStateMachine->OnExecute();
+    pStateMachine->OnLeave();
 }
 
 void App::Render()

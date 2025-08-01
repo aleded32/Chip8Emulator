@@ -4,44 +4,35 @@
 
 void fetch::Enter()
 {
-    std::cout << "enter is working" << std::endl;
 }
 std::string fetch::Execute() const
 {
-    std::cout << "Execute is working" << std::endl;
     return stateMachine::mStateExecute.data();
 }
 void fetch::Leave()
 {
-    std::cout << "Leave is working" << std::endl;
 }
 //----------------------------------------------------------
 void execute::Enter()
 {
-    std::cout << "enter is working" << std::endl;
 }
 std::string execute::Execute() const
 {
-    std::cout << "Execute is working" << std::endl;
     return stateMachine::mStateDecode.data();
 }
 void execute::Leave()
 {
-    std::cout << "Leave is working" << std::endl;
 }
 //----------------------------------------------------------
 void decode::Enter()
 {
-    std::cout << "enter is working" << std::endl;
 }
 std::string decode::Execute() const
 {
-    std::cout << "Execute is working" << std::endl;
     return stateMachine::mStatefetch.data();
 }
 void decode::Leave()
 {
-    std::cout << "Leave is working" << std::endl;
 }
 
 
@@ -50,16 +41,17 @@ stateMachine::stateMachine() :
     mDecode(stateMachine::mStateDecode.data())
 {
 
-    AddState(std::make_shared<fetch>(mFetch));
-    AddState(std::make_shared<execute>(mExecute));
-    AddState(std::make_shared<decode>(mDecode));
+
+    AddState(&mFetch);
+    AddState(&mExecute);
+    AddState(&mDecode);
 
     if(!stateQueue.empty())
     {
         currentState = stateQueue.at(stateMachine::mStatefetch);
     }
-}
-    
+}  
+
 
 void stateMachine::OnEnter()
 {   
@@ -76,8 +68,8 @@ void stateMachine::OnExecute()
         const std::string_view nextStateName{currentState->Execute()};
         if(!nextStateName.empty())
         {
-            const auto findState = [&](std::pair<std::string_view, std::shared_ptr<state>> state){return state.first == nextStateName;};
-            std::shared_ptr<state> tempState = std::find_if(stateQueue.begin(), stateQueue.end(), findState)->second;
+            const auto findState = [&](std::pair<std::string_view, state*> state){return state.first == nextStateName;};
+            state* tempState = std::find_if(stateQueue.begin(), stateQueue.end(), findState)->second;
             nextState = tempState;
         }
     }
@@ -85,15 +77,15 @@ void stateMachine::OnExecute()
 
 void stateMachine::OnLeave()
 {
-    if((currentState != nextState) && nextState.get())
+    if((currentState != nextState) && nextState)
     {
         currentState->Leave();
         currentState = nextState;
     }
 }
 
-void stateMachine::AddState(std::shared_ptr<state> State)
+void stateMachine::AddState(state* State)
 {
-    const auto stateToAdd{std::make_pair(State->GetName(), State)};
+    auto stateToAdd{std::make_pair(State->GetName(), State)};
     stateQueue.insert(stateToAdd); 
 }

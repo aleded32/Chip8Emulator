@@ -3,6 +3,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <memory>
+#include <string>
 #include "state.h"
 
 class fetch : public state
@@ -49,25 +50,24 @@ private:
 class stateMachine
 {
 public:
-
     stateMachine();
     void OnEnter();
     void OnExecute();
     void OnLeave();
-    void AddState(std::shared_ptr<state> State);
+    void AddState(state* State);
  
 
 private:
-    std::unordered_map<std::string_view, std::shared_ptr<state>> stateQueue;
-    std::shared_ptr<state> currentState;
-    std::shared_ptr<state> nextState;
+    std::unordered_map<std::string_view, state*> stateQueue;
+    state* currentState{nullptr};
+    state* nextState{nullptr};
 
     fetch mFetch;
     execute mExecute;
     decode mDecode;
 
 public:
-    static constexpr std::string_view mStatefetch{"fetch"};
-    static constexpr std::string_view mStateExecute{"execute"}; 
-    static constexpr std::string_view mStateDecode{"decode"};
+    static constexpr std::string_view mStatefetch = "fetch";
+    static constexpr std::string_view mStateExecute = "execute"; 
+    static constexpr std::string_view mStateDecode = "decode";
 };

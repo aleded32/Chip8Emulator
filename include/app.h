@@ -37,5 +37,5 @@ private:
 
     static App* pInstance;
     static std::mutex mtx;
-    std::shared_ptr<stateMachine> pStateMachine;
+    stateMachine* pStateMachine;
 };
