@@ -12,7 +12,11 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
         SDL_Log("Couldn't create window and renderer: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
-    return SDL_APP_CONTINUE;
+
+    SDL_AppResult Res;
+    app.Init(Res, argc, argv);
+
+    return Res;
 }
 
 SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)

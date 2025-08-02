@@ -3,6 +3,7 @@
 #include <iostream>
 #include <mutex>
 #include "stateMachine.h"
+#include "memoryManager.h"
 
 
 class App
@@ -11,6 +12,7 @@ public:
     
     App(uint16_t width, uint16_t height);
 
+    void Init(SDL_AppResult& appResult, int argc, char* argv[]);
     void Execute();
     void Render();
 
@@ -20,6 +22,8 @@ public:
 private:
 
     std::unique_ptr<stateMachine> pStateMachine;
+    std::string mfilename{};
+    memoryManager mMemoryManger;
 
     struct size
     {
