@@ -9,20 +9,8 @@ class App
 {
 public:
     
-    App(App const&) = delete;
+    App(uint16_t width, uint16_t height);
 
-    static App* GetInstance()
-    {
-        if(!pInstance)
-        {
-            std::lock_guard<std::mutex> lock(mtx);
-            App newInstance;
-            pInstance = &newInstance;
-        }
-        return pInstance;
-    }
-
-    void Init();
     void Execute();
     void Render();
 
@@ -31,11 +19,20 @@ public:
 
 private:
 
-    
-    App() = default;
+    std::unique_ptr<stateMachine> pStateMachine;
 
+    struct size
+    {
+        uint16_t width{0};
+        uint16_t height{0};
 
-    static App* pInstance;
-    static std::mutex mtx;
-    stateMachine* pStateMachine;
+        size(uint16_t _width, uint16_t _height)
+            : width(_width), height(_height)
+        {}
+    };
+
+    size mScreenSize;
+
+public:
+    size GetScreenSize() const{return mScreenSize;}
 };

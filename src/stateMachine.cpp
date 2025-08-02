@@ -42,13 +42,13 @@ stateMachine::stateMachine() :
 {
 
 
-    AddState(&mFetch);
-    AddState(&mExecute);
-    AddState(&mDecode);
+    AddState(std::make_shared<decode>(mDecode));
+    AddState(std::make_shared<execute>(mExecute));
+    AddState(std::make_shared<fetch>(mFetch));
 
     if(!stateQueue.empty())
     {
-        currentState = stateQueue.at(stateMachine::mStatefetch);
+        currentState = stateQueue.at(stateMachine::mStatefetch.data());
     }
 }  
 
@@ -68,9 +68,9 @@ void stateMachine::OnExecute()
         const std::string_view nextStateName{currentState->Execute()};
         if(!nextStateName.empty())
         {
-            const auto findState = [&](std::pair<std::string_view, state*> state){return state.first == nextStateName;};
-            state* tempState = std::find_if(stateQueue.begin(), stateQueue.end(), findState)->second;
-            nextState = tempState;
+            const auto findState = [&](std::pair<std::string_view, std::shared_ptr<state>> state){return state.first == nextStateName;};
+            std::weak_ptr<state> tempState = std::find_if(stateQueue.begin(), stateQueue.end(), findState)->second;
+            nextState =  tempState.lock();
         }
     }
 }
@@ -84,7 +84,7 @@ void stateMachine::OnLeave()
     }
 }
 
-void stateMachine::AddState(state* State)
+void stateMachine::AddState(std::shared_ptr<state> State)
 {
     auto stateToAdd{std::make_pair(State->GetName(), State)};
     stateQueue.insert(stateToAdd); 

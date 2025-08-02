@@ -1,7 +1,10 @@
 #include "app.h"
-void App::Init()
+
+
+App::App(uint16_t width, uint16_t height) :
+mScreenSize(width, height), pStateMachine(std::make_unique<stateMachine>())
 {
-    pStateMachine = new stateMachine();
+
 }
 
 void App::Execute()
@@ -13,5 +16,5 @@ void App::Execute()
 
 void App::Render()
 {
-    
+
 }

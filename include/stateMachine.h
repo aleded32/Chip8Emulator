@@ -54,13 +54,13 @@ public:
     void OnEnter();
     void OnExecute();
     void OnLeave();
-    void AddState(state* State);
+    void AddState(std::shared_ptr<state> State);
  
 
 private:
-    std::unordered_map<std::string_view, state*> stateQueue;
-    state* currentState{nullptr};
-    state* nextState{nullptr};
+    std::unordered_map<std::string, std::shared_ptr<state>> stateQueue;
+    std::shared_ptr<state> currentState{nullptr};
+    std::shared_ptr<state> nextState{nullptr};
 
     fetch mFetch;
     execute mExecute;
